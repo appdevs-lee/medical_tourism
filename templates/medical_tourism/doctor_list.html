@@ -1,0 +1,315 @@
+{% extends 'base.html' %}
+
+{% block title %}의료진 - MediCare Global{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-r from-green-600 to-blue-700 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center text-white">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">전문 의료진</h1>
+            <p class="text-xl text-green-100 max-w-3xl mx-auto">
+                풍부한 경험과 전문성을 갖춘 최고의 의료진이 여러분의 건강을 책임집니다
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Breadcrumb -->
+<nav class="bg-gray-50 border-b border-gray-200" aria-label="Breadcrumb">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center space-x-4 py-4">
+            <a href="{% url 'medical_tourism:home' %}" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-home"></i>
+            </a>
+            <i class="fas fa-chevron-right text-gray-400 text-sm"></i>
+            <span class="text-gray-900 font-medium">의료진</span>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<section class="py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Filter and Search -->
+        <div class="mb-8 bg-gray-50 rounded-lg p-6">
+            <form method="GET" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- Search -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">의사 검색</label>
+                        <div class="relative">
+                            <input type="text" name="search" value="{{ request.GET.search }}" 
+                                   placeholder="의사명, 전문분야 검색..." 
+                                   class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                                <i class="fas fa-search text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Department Filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">진료과목</label>
+                        <select name="department" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                            <option value="">전체</option>
+                            {% for dept in departments %}
+                                <option value="{{ dept.id }}" {% if request.GET.department == dept.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ dept.name_ko }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Language Filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">구사언어</label>
+                        <select name="language" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                            <option value="">전체</option>
+                            <option value="영어" {% if request.GET.language == "영어" %}selected{% endif %}>영어</option>
+                            <option value="중국어" {% if request.GET.language == "중국어" %}selected{% endif %}>중국어</option>
+                            <option value="일본어" {% if request.GET.language == "일본어" %}selected{% endif %}>일본어</option>
+                            <option value="러시아어" {% if request.GET.language == "러시아어" %}selected{% endif %}>러시아어</option>
+                            <option value="아랍어" {% if request.GET.language == "아랍어" %}selected{% endif %}>아랍어</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <!-- Apply Filters -->
+                    <div class="flex gap-2">
+                        <button type="submit" 
+                                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-filter mr-2"></i>필터 적용
+                        </button>
+                        <a href="{% url 'medical_tourism:doctor_list' %}" 
+                           class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                            <i class="fas fa-times mr-2"></i>초기화
+                        </a>
+                    </div>
+                    
+                    <!-- Sort and Count -->
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm text-gray-600">총 {{ doctors|length }}명의 의료진</span>
+                        <select name="sort" onchange="this.form.submit()" 
+                                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500">
+                            <option value="-rating" {% if request.GET.sort == '-rating' %}selected{% endif %}>평점 높은 순</option>
+                            <option value="name" {% if request.GET.sort == 'name' %}selected{% endif %}>이름순</option>
+                            <option value="-experience_years" {% if request.GET.sort == '-experience_years' %}selected{% endif %}>경력순</option>
+                            <option value="consultation_fee" {% if request.GET.sort == 'consultation_fee' %}selected{% endif %}>진료비 낮은 순</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Doctors Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for doctor in doctors %}
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden card-hover">
+                    <!-- Doctor Header -->
+                    <div class="relative bg-gradient-to-br from-blue-500 to-green-600 p-6 text-white">
+                        <div class="flex items-center">
+                            {% if doctor.profile_image %}
+                                <img src="{{ doctor.profile_image.url }}" alt="{{ doctor.name }}" 
+                                     class="w-20 h-20 rounded-full object-cover border-4 border-white/30 mr-4">
+                            {% else %}
+                                <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center border-4 border-white/30 mr-4">
+                                    <span class="text-2xl font-bold">{{ doctor.name|first }}</span>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold mb-1">{{ doctor.name }}</h3>
+                                <p class="text-blue-100 text-sm">{{ doctor.department.name_ko }}</p>
+                                
+                                <!-- Rating -->
+                                <div class="flex items-center mt-2">
+                                    <div class="flex text-yellow-300">
+                                        {% for i in "12345" %}
+                                            {% if doctor.rating|floatformat:0|add:0 >= forloop.counter %}
+                                                <i class="fas fa-star text-sm"></i>
+                                            {% else %}
+                                                <i class="far fa-star text-sm"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <span class="text-white text-sm ml-2">{{ doctor.rating }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if not doctor.is_available %}
+                            <div class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                                진료 중단
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Doctor Details -->
+                    <div class="p-6">
+                        <!-- Specialization -->
+                        <div class="mb-4">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">전문분야</h4>
+                            <p class="text-gray-900">{{ doctor.specialization }}</p>
+                        </div>
+
+                        <!-- Experience & Languages -->
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="text-center bg-blue-50 rounded-lg p-3">
+                                <div class="text-2xl font-bold text-blue-600">{{ doctor.experience_years }}</div>
+                                <div class="text-xs text-gray-600">년 경력</div>
+                            </div>
+                            <div class="text-center bg-green-50 rounded-lg p-3">
+                                <div class="text-2xl font-bold text-green-600">{{ doctor.consultation_fee|floatformat:0 }}</div>
+                                <div class="text-xs text-gray-600">만원</div>
+                            </div>
+                        </div>
+
+                        <!-- Languages -->
+                        <div class="mb-4">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">구사언어</h4>
+                            <div class="flex flex-wrap gap-1">
+                                {% for lang in doctor.languages|split:"," %}
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-700">
+                                        <i class="fas fa-language mr-1"></i>{{ lang|trim }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Bio Preview -->
+                        {% if doctor.bio %}
+                        <div class="mb-4">
+                            <p class="text-gray-600 text-sm line-clamp-2">{{ doctor.bio|truncatewords:20 }}</p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Action Buttons -->
+                        <div class="flex gap-2">
+                            <a href="{% url 'medical_tourism:doctor_detail' doctor.pk %}" 
+                               class="flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded-lg text-center text-sm font-medium hover:bg-gray-200 transition-colors">
+                                프로필 보기
+                            </a>
+                            {% if doctor.is_available %}
+                                <a href="{% url 'medical_tourism:appointment_create_doctor' doctor.pk %}" 
+                                   class="flex-1 bg-gradient-to-r from-green-500 to-blue-600 text-white py-2 px-3 rounded-lg text-center text-sm font-medium hover:from-green-600 hover:to-blue-700 transition-all">
+                                    예약하기
+                                </a>
+                            {% else %}
+                                <button disabled 
+                                        class="flex-1 bg-gray-300 text-gray-500 py-2 px-3 rounded-lg text-center text-sm font-medium cursor-not-allowed">
+                                    예약 불가
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <!-- Empty State -->
+                <div class="col-span-full text-center py-12">
+                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-user-md text-gray-400 text-3xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">검색 조건에 맞는 의료진이 없습니다</h3>
+                    <p class="text-gray-500 mb-4">다른 조건으로 검색해보세요.</p>
+                    <a href="{% url 'medical_tourism:doctor_list' %}" 
+                       class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                        전체 의료진 보기
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="mt-12 flex justify-center">
+            <nav class="flex items-center space-x-2">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.department %}&department={{ request.GET.department }}{% endif %}{% if request.GET.language %}&language={{ request.GET.language }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" 
+                       class="px-3 py-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <span class="px-3 py-2 bg-blue-600 text-white rounded-lg font-medium">{{ num }}</span>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.department %}&department={{ request.GET.department }}{% endif %}{% if request.GET.language %}&language={{ request.GET.language }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" 
+                           class="px-3 py-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                            {{ num }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.department %}&department={{ request.GET.department }}{% endif %}{% if request.GET.language %}&language={{ request.GET.language }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" 
+                       class="px-3 py-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="bg-gradient-to-r from-green-600 to-blue-700 py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold text-white mb-4">
+            전문 의료진과 상담하세요
+        </h2>
+        <p class="text-xl text-green-100 mb-8">
+            24시간 의료진 상담 서비스로 최적의 치료 계획을 수립해드립니다.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'medical_tourism:contact' %}" 
+               class="bg-white text-green-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                <i class="fas fa-phone mr-2"></i>의료진 상담
+            </a>
+            <a href="{% url 'medical_tourism:appointment_create' %}" 
+               class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-green-600 transition-colors">
+                <i class="fas fa-calendar-plus mr-2"></i>진료 예약
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Auto-submit form on sort change
+    document.querySelector('select[name="sort"]').addEventListener('change', function() {
+        this.form.submit();
+    });
+
+    // Smooth scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    document.querySelectorAll('.card-hover').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(card);
+    });
+
+    // Split filter for languages
+    String.prototype.split = function(delimiter) {
+        return this.split(delimiter);
+    };
+</script>
+{% endblock %}

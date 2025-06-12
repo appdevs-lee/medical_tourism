@@ -1,0 +1,217 @@
+<!-- templates/medical_tourism/payment.html -->
+{% extends 'base.html' %}
+
+{% block title %}결제 - MediCare Global{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-r from-blue-600 to-purple-700 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center text-white">
+            <h1 class="text-4xl font-bold mb-4">결제</h1>
+            <p class="text-xl text-blue-100">
+                안전하고 편리한 결제 시스템으로 진행해주세요
+            </p>
+        </div>
+    </div>
+</section>
+
+<div class="min-h-screen bg-gray-50 py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Progress Steps -->
+        <div class="mb-8">
+            <div class="flex items-center justify-center">
+                <div class="flex items-center">
+                    <div class="flex items-center text-green-600">
+                        <div class="flex items-center justify-center w-10 h-10 bg-green-600 rounded-full text-white text-sm font-medium">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span class="ml-3 text-sm font-medium">예약 정보</span>
+                    </div>
+                    <div class="mx-4 text-green-500">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="flex items-center text-blue-600">
+                        <div class="flex items-center justify-center w-10 h-10 bg-blue-600 rounded-full text-white text-sm font-medium">
+                            2
+                        </div>
+                        <span class="ml-3 text-sm font-medium">결제</span>
+                    </div>
+                    <div class="mx-4 text-gray-300">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="flex items-center text-gray-400">
+                        <div class="flex items-center justify-center w-10 h-10 bg-gray-300 rounded-full text-white text-sm font-medium">
+                            3
+                        </div>
+                        <span class="ml-3 text-sm font-medium">완료</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Payment Form -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                        <i class="fas fa-credit-card mr-3 text-blue-600"></i>결제 정보
+                    </h2>
+
+                    <form id="paymentForm">
+                        <!-- Payment Method -->
+                        <div class="mb-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">결제 방법</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                <label class="relative">
+                                    <input type="radio" name="payment_method" value="credit_card" class="sr-only peer" checked>
+                                    <div class="border-2 border-gray-200 rounded-lg p-4 text-center cursor-pointer peer-checked:border-blue-500 peer-checked:bg-blue-50 hover:bg-gray-50">
+                                        <i class="fas fa-credit-card text-2xl text-gray-600 mb-2"></i>
+                                        <div class="text-sm font-medium">신용카드</div>
+                                    </div>
+                                </label>
+                                <label class="relative">
+                                    <input type="radio" name="payment_method" value="bank_transfer" class="sr-only peer">
+                                    <div class="border-2 border-gray-200 rounded-lg p-4 text-center cursor-pointer peer-checked:border-blue-500 peer-checked:bg-blue-50 hover:bg-gray-50">
+                                        <i class="fas fa-university text-2xl text-gray-600 mb-2"></i>
+                                        <div class="text-sm font-medium">계좌이체</div>
+                                    </div>
+                                </label>
+                                <label class="relative">
+                                    <input type="radio" name="payment_method" value="paypal" class="sr-only peer">
+                                    <div class="border-2 border-gray-200 rounded-lg p-4 text-center cursor-pointer peer-checked:border-blue-500 peer-checked:bg-blue-50 hover:bg-gray-50">
+                                        <i class="fab fa-paypal text-2xl text-gray-600 mb-2"></i>
+                                        <div class="text-sm font-medium">PayPal</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Credit Card Form -->
+                        <div id="creditCardForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">카드 번호</label>
+                                <input type="text" placeholder="1234 5678 9012 3456" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">만료일</label>
+                                    <input type="text" placeholder="MM/YY" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">CVC</label>
+                                    <input type="text" placeholder="123" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">카드 소지자명</label>
+                                <input type="text" placeholder="홍길동" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+
+                        <!-- Terms Agreement -->
+                        <div class="mt-6 space-y-3">
+                            <label class="flex items-start">
+                                <input type="checkbox" required class="mt-1 mr-3 h-4 w-4 text-blue-600">
+                                <span class="text-sm text-gray-700">
+                                    <a href="#" class="text-blue-600 hover:text-blue-800">결제 이용약관</a>에 동의합니다.
+                                </span>
+                            </label>
+                            <label class="flex items-start">
+                                <input type="checkbox" required class="mt-1 mr-3 h-4 w-4 text-blue-600">
+                                <span class="text-sm text-gray-700">
+                                    <a href="#" class="text-blue-600 hover:text-blue-800">개인정보 수집 및 이용</a>에 동의합니다.
+                                </span>
+                            </label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-4">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">
+                        <i class="fas fa-receipt mr-2 text-green-600"></i>결제 요약
+                    </h3>
+
+                    <!-- Appointment Details -->
+                    <div class="space-y-4 mb-6">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-user-md text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">{{ appointment.doctor.name }}</h4>
+                                <p class="text-sm text-gray-600">{{ appointment.doctor.department.name_ko }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <div class="text-gray-600">날짜:</div>
+                                <div class="font-medium">{{ appointment.appointment_date|date:"Y년 m월 d일" }}</div>
+                                <div class="text-gray-600">시간:</div>
+                                <div class="font-medium">{{ appointment.appointment_date|time:"H:i" }}</div>
+                                {% if appointment.package %}
+                                <div class="text-gray-600">패키지:</div>
+                                <div class="font-medium">{{ appointment.package.name_ko }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cost Breakdown -->
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">진료비</span>
+                            <span class="font-medium">₩{{ appointment.doctor.consultation_fee|floatformat:0 }}</span>
+                        </div>
+                        {% if appointment.package %}
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">패키지 비용</span>
+                            <span class="font-medium">₩{{ appointment.package.price|floatformat:0 }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">부가세</span>
+                            <span class="font-medium">₩{{ appointment.total_amount|mul:0.1|floatformat:0 }}</span>
+                        </div>
+                        <div class="border-t border-gray-200 pt-3">
+                            <div class="flex justify-between text-lg font-bold">
+                                <span class="text-gray-900">총 결제 금액</span>
+                                <span class="text-blue-600">₩{{ appointment.total_amount|mul:1.1|floatformat:0 }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Security -->
+                    <div class="bg-green-50 rounded-lg p-4 mb-6">
+                        <div class="flex items-center text-green-800">
+                            <i class="fas fa-shield-alt mr-2"></i>
+                            <span class="text-sm font-medium">안전한 결제</span>
+                        </div>
+                        <p class="text-xs text-green-700 mt-1">
+                            SSL 암호화로 보호되는 안전한 결제 시스템입니다.
+                        </p>
+                    </div>
+
+                    <!-- Payment Button -->
+                    <button type="submit" form="paymentForm"
+                            class="w-full bg-gradient-to-r from-blue-600 to-purple-700 text-white py-4 rounded-lg font-bold text-lg hover:from-blue-700 hover:to-purple-800 transform hover:scale-105 transition-all duration-200">
+                        <i class="fas fa-lock mr-2"></i>₩{{ appointment.total_amount|mul:1.1|floatformat:0 }} 결제하기
+                    </button>
+
+                    <p class="text-xs text-gray-500 text-center mt-3">
+                        결제 후 예약이 확정됩니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

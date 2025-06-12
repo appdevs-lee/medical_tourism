@@ -1,0 +1,469 @@
+{% extends 'base.html' %}
+
+{% block title %}진료 예약 - MediCare Global{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-r from-purple-600 to-blue-700 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center text-white">
+            <h1 class="text-4xl font-bold mb-4">진료 예약</h1>
+            <p class="text-xl text-purple-100">
+                전문 의료진과의 맞춤형 진료 예약을 진행해보세요
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Breadcrumb -->
+<nav class="bg-gray-50 border-b border-gray-200" aria-label="Breadcrumb">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center space-x-4 py-4">
+            <a href="{% url 'medical_tourism:home' %}" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-home"></i>
+            </a>
+            <i class="fas fa-chevron-right text-gray-400 text-sm"></i>
+            <span class="text-gray-900 font-medium">진료 예약</span>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="min-h-screen bg-gray-50 py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Progress Steps -->
+        <div class="mb-8">
+            <div class="flex items-center justify-center">
+                <div class="flex items-center">
+                    <!-- Step 1 -->
+                    <div class="flex items-center text-blue-600">
+                        <div class="flex items-center justify-center w-10 h-10 bg-blue-600 rounded-full text-white text-sm font-medium">
+                            1
+                        </div>
+                        <span class="ml-3 text-sm font-medium">예약 정보</span>
+                    </div>
+                    
+                    <!-- Arrow -->
+                    <div class="mx-4 text-gray-300">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div class="flex items-center text-gray-400">
+                        <div class="flex items-center justify-center w-10 h-10 bg-gray-300 rounded-full text-white text-sm font-medium">
+                            2
+                        </div>
+                        <span class="ml-3 text-sm font-medium">결제</span>
+                    </div>
+                    
+                    <!-- Arrow -->
+                    <div class="mx-4 text-gray-300">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    
+                    <!-- Step 3 -->
+                    <div class="flex items-center text-gray-400">
+                        <div class="flex items-center justify-center w-10 h-10 bg-gray-300 rounded-full text-white text-sm font-medium">
+                            3
+                        </div>
+                        <span class="ml-3 text-sm font-medium">완료</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointment Form -->
+        <div class="bg-white shadow-xl rounded-2xl overflow-hidden">
+            <div class="bg-gradient-to-r from-purple-600 to-blue-700 px-8 py-6">
+                <h2 class="text-2xl font-bold text-white">
+                    <i class="fas fa-calendar-plus mr-3"></i>예약 정보 입력
+                </h2>
+                <p class="text-purple-100 mt-2">정확한 정보를 입력해 주시면 더 나은 진료 서비스를 제공해드릴 수 있습니다.</p>
+            </div>
+
+            <form method="post" class="p-8 space-y-8" id="appointmentForm">
+                {% csrf_token %}
+                
+                <!-- Doctor and Package Selection -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Doctor Selection -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <i class="fas fa-user-md mr-2 text-blue-600"></i>의료진 선택
+                        </h3>
+                        
+                        <div class="relative">
+                            <label for="id_doctor" class="block text-sm font-medium text-gray-700 mb-2">담당 의사 *</label>
+                            {{ form.doctor }}
+                            {% if form.doctor.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.doctor.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Selected Doctor Info (Dynamic) -->
+                        <div id="doctorInfo" class="hidden bg-blue-50 rounded-lg p-4">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-user-md text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900" id="doctorName"></h4>
+                                    <p class="text-sm text-gray-600" id="doctorDept"></p>
+                                    <p class="text-sm text-blue-600" id="doctorFee"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Package Selection -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <i class="fas fa-gift mr-2 text-purple-600"></i>패키지 선택 (선택사항)
+                        </h3>
+                        
+                        <div class="relative">
+                            <label for="id_package" class="block text-sm font-medium text-gray-700 mb-2">의료 패키지</label>
+                            {{ form.package }}
+                            {% if form.package.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.package.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Selected Package Info (Dynamic) -->
+                        <div id="packageInfo" class="hidden bg-purple-50 rounded-lg p-4">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-gift text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900" id="packageName"></h4>
+                                    <p class="text-sm text-gray-600" id="packageDuration"></p>
+                                    <p class="text-sm text-purple-600" id="packagePrice"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Date and Time Selection -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-calendar-alt mr-2 text-green-600"></i>날짜 및 시간 선택
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Date Selection -->
+                        <div>
+                            <label for="appointmentDate" class="block text-sm font-medium text-gray-700 mb-2">희망 날짜 *</label>
+                            <input type="date" id="appointmentDate" name="appointment_date_only" required
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        
+                        <!-- Time Slots -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">희망 시간 *</label>
+                            <div id="timeSlots" class="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto">
+                                <p class="col-span-3 text-sm text-gray-500 text-center py-4">
+                                    의사와 날짜를 먼저 선택해주세요
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Hidden datetime field for form submission -->
+                    {{ form.appointment_date }}
+                    {% if form.appointment_date.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.appointment_date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Medical Information -->
+                <div class="space-y-6 border-t border-gray-200 pt-8">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fas fa-notes-medical mr-2 text-red-600"></i>의료 정보
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Symptoms -->
+                        <div>
+                            <label for="id_symptoms" class="block text-sm font-medium text-gray-700 mb-2">
+                                현재 증상 *
+                            </label>
+                            {{ form.symptoms }}
+                            {% if form.symptoms.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.symptoms.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Medical History -->
+                        <div>
+                            <label for="id_medical_history" class="block text-sm font-medium text-gray-700 mb-2">
+                                과거 병력
+                            </label>
+                            {{ form.medical_history }}
+                            {% if form.medical_history.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.medical_history.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Allergies -->
+                        <div>
+                            <label for="id_allergies" class="block text-sm font-medium text-gray-700 mb-2">
+                                알레르기
+                            </label>
+                            {{ form.allergies }}
+                            {% if form.allergies.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.allergies.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Current Medications -->
+                        <div>
+                            <label for="id_medications" class="block text-sm font-medium text-gray-700 mb-2">
+                                복용 중인 약물
+                            </label>
+                            {{ form.medications }}
+                            {% if form.medications.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ form.medications.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Special Notes -->
+                    <div>
+                        <label for="id_notes" class="block text-sm font-medium text-gray-700 mb-2">
+                            기타 특이사항
+                        </label>
+                        {{ form.notes }}
+                        {% if form.notes.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.notes.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Cost Summary -->
+                <div class="bg-gray-50 rounded-lg p-6 border-t border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-calculator mr-2 text-green-600"></i>예상 비용
+                    </h3>
+                    
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">진료비</span>
+                            <span id="consultationFee" class="font-medium">₩0</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">패키지 비용</span>
+                            <span id="packageCost" class="font-medium">₩0</span>
+                        </div>
+                        <div class="border-t border-gray-300 pt-2">
+                            <div class="flex justify-between text-lg font-semibold">
+                                <span class="text-gray-900">총 예상 비용</span>
+                                <span id="totalCost" class="text-blue-600">₩0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                        <p class="text-sm text-blue-800">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            실제 비용은 진료 후 확정되며, 위 금액은 예상 비용입니다.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                    <button type="button" onclick="history.back()" 
+                            class="flex-1 bg-gray-200 text-gray-700 py-3 px-6 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>이전으로
+                    </button>
+                    <button type="submit" 
+                            class="flex-2 bg-gradient-to-r from-purple-600 to-blue-700 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-200">
+                        <i class="fas fa-credit-card mr-2"></i>결제하기
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Help Section -->
+        <div class="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-question-circle mr-2 text-blue-600"></i>예약 도움말
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+                <div class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                    <div>
+                        <strong>예약 변경:</strong> 진료 24시간 전까지 무료 변경 가능
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                    <div>
+                        <strong>취소 정책:</strong> 진료 48시간 전까지 전액 환불
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                    <div>
+                        <strong>언어 지원:</strong> 전문 의료 통역사 배치 가능
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                    <div>
+                        <strong>픽업 서비스:</strong> 공항/호텔에서 병원까지 무료
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4 text-center">
+                <p class="text-sm text-gray-600">
+                    문의사항이 있으시면 언제든지 연락주세요: 
+                    <span class="font-medium text-blue-600">+82-2-1234-5678</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const doctorSelect = document.getElementById('id_doctor');
+    const packageSelect = document.getElementById('id_package');
+    const dateInput = document.getElementById('appointmentDate');
+    const timeSlotsContainer = document.getElementById('timeSlots');
+    const appointmentDateTimeInput = document.getElementById('id_appointment_date');
+
+    // Set minimum date to tomorrow
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    dateInput.min = tomorrow.toISOString().split('T')[0];
+
+    // Doctor selection change
+    doctorSelect.addEventListener('change', function() {
+        const doctorId = this.value;
+        if (doctorId) {
+            showDoctorInfo(doctorId);
+            updateCostSummary();
+            loadAvailableSlots();
+        } else {
+            hideDoctorInfo();
+        }
+    });
+
+    // Package selection change
+    packageSelect.addEventListener('change', function() {
+        const packageId = this.value;
+        if (packageId) {
+            showPackageInfo(packageId);
+        } else {
+            hidePackageInfo();
+        }
+        updateCostSummary();
+    });
+
+    // Date change
+    dateInput.addEventListener('change', function() {
+        loadAvailableSlots();
+    });
+
+    function showDoctorInfo(doctorId) {
+        // This would normally fetch doctor info via AJAX
+        // For now, show the container
+        document.getElementById('doctorInfo').classList.remove('hidden');
+    }
+
+    function hideDoctorInfo() {
+        document.getElementById('doctorInfo').classList.add('hidden');
+    }
+
+    function showPackageInfo(packageId) {
+        // This would normally fetch package info via AJAX
+        document.getElementById('packageInfo').classList.remove('hidden');
+    }
+
+    function hidePackageInfo() {
+        document.getElementById('packageInfo').classList.add('hidden');
+    }
+
+    function loadAvailableSlots() {
+        const doctorId = doctorSelect.value;
+        const date = dateInput.value;
+        
+        if (!doctorId || !date) {
+            timeSlotsContainer.innerHTML = '<p class="col-span-3 text-sm text-gray-500 text-center py-4">의사와 날짜를 먼저 선택해주세요</p>';
+            return;
+        }
+
+        // Show loading
+        timeSlotsContainer.innerHTML = '<p class="col-span-3 text-sm text-gray-500 text-center py-4"><i class="fas fa-spinner fa-spin mr-2"></i>예약 가능한 시간을 조회중...</p>';
+
+        // Fetch available slots
+        fetch(`/api/available-slots/?doctor_id=${doctorId}&date=${date}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.slots && data.slots.length > 0) {
+                    timeSlotsContainer.innerHTML = '';
+                    data.slots.forEach(slot => {
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'p-2 text-sm border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors';
+                        button.textContent = slot.time;
+                        button.onclick = () => selectTimeSlot(slot.datetime, button);
+                        timeSlotsContainer.appendChild(button);
+                    });
+                } else {
+                    timeSlotsContainer.innerHTML = '<p class="col-span-3 text-sm text-gray-500 text-center py-4">선택하신 날짜에 예약 가능한 시간이 없습니다</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                timeSlotsContainer.innerHTML = '<p class="col-span-3 text-sm text-red-500 text-center py-4">시간 조회 중 오류가 발생했습니다</p>';
+            });
+    }
+
+    function selectTimeSlot(datetime, button) {
+        // Remove previous selection
+        document.querySelectorAll('#timeSlots button').forEach(btn => {
+            btn.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
+            btn.classList.add('border-gray-300');
+        });
+
+        // Highlight selected slot
+        button.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+        button.classList.remove('border-gray-300');
+
+        // Set the hidden datetime input
+        appointmentDateTimeInput.value = datetime;
+    }
+
+    function updateCostSummary() {
+        // This would calculate based on selected doctor and package
+        // For now, show placeholder values
+        const consultationFee = doctorSelect.value ? 150000 : 0;
+        const packageCost = packageSelect.value ? 300000 : 0;
+        const total = consultationFee + packageCost;
+
+        document.getElementById('consultationFee').textContent = `₩${consultationFee.toLocaleString()}`;
+        document.getElementById('packageCost').textContent = `₩${packageCost.toLocaleString()}`;
+        document.getElementById('totalCost').textContent = `₩${total.toLocaleString()}`;
+    }
+
+    // Form validation
+    document.getElementById('appointmentForm').addEventListener('submit', function(e) {
+        if (!appointmentDateTimeInput.value) {
+            e.preventDefault();
+            alert('예약 시간을 선택해주세요.');
+            return false;
+        }
+    });
+
+    // Initialize
+    updateCostSummary();
+});
+</script>
+{% endblock %}

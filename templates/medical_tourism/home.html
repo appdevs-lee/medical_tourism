@@ -1,0 +1,472 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}MediCare Global - 해외환자 전용 의료관광{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 min-h-screen flex items-center">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 bg-medical-pattern opacity-10"></div>
+    
+    <!-- Floating Elements -->
+    <div class="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full animate-float"></div>
+    <div class="absolute top-40 right-20 w-32 h-32 bg-white/5 rounded-full animate-float" style="animation-delay: -2s;"></div>
+    <div class="absolute bottom-20 left-1/4 w-16 h-16 bg-white/10 rounded-full animate-float" style="animation-delay: -4s;"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <!-- Hero Content -->
+            <div class="text-white">
+                <h1 class="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                    세계 최고 수준의
+                    <span class="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+                        의료 서비스
+                    </span>
+                </h1>
+                <p class="text-xl lg:text-2xl mb-8 text-blue-100 leading-relaxed">
+                    해외환자를 위한 맞춤형 의료관광 서비스로 
+                    건강과 치유의 새로운 경험을 제공합니다.
+                </p>
+                
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 mb-12">
+                    <a href="{% url 'medical_tourism:appointment_create' %}" 
+                       class="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 text-center shadow-lg">
+                        <i class="fas fa-calendar-plus mr-2"></i> 예약하기
+                    </a>
+                    <a href="{% url 'medical_tourism:package_list' %}" 
+                       class="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-blue-600 transition-all duration-300 text-center">
+                        <i class="fas fa-gift mr-2"></i> 패키지 보기
+                    </a>
+                </div>
+                
+                <!-- Stats -->
+                <div class="grid grid-cols-3 gap-8">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold mb-2">50+</div>
+                        <div class="text-blue-200">전문 의료진</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold mb-2">15+</div>
+                        <div class="text-blue-200">진료 과목</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold mb-2">1000+</div>
+                        <div class="text-blue-200">성공 사례</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hero Image/Animation -->
+            <div class="relative">
+                <div class="glass-effect rounded-3xl p-8 backdrop-blur-sm">
+                    <div class="bg-white rounded-2xl p-8 shadow-2xl">
+                        <!-- Quick Booking Form -->
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                            <i class="fas fa-rocket text-blue-600 mr-2"></i>
+                            빠른 예약
+                        </h3>
+                        
+                        <form class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">진료과목</label>
+                                <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option>진료과목을 선택하세요</option>
+                                    {% for dept in popular_departments %}
+                                        <option value="{{ dept.id }}">{{ dept.name_ko }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">희망 날짜</label>
+                                <input type="date" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            
+                            <button type="button" onclick="location.href='{% url 'medical_tourism:appointment_create' %}'" 
+                                    class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-300">
+                                <i class="fas fa-search mr-2"></i> 예약 가능 시간 찾기
+                            </button>
+                        </form>
+                        
+                        <!-- Features -->
+                        <div class="mt-6 grid grid-cols-2 gap-4 text-sm">
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                24시간 상담
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                다국어 지원
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                무료 픽업
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                보험 연동
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Packages Section -->
+<section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    추천 의료 패키지
+                </span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                해외환자를 위한 특별히 설계된 종합 의료 패키지로 최고의 치료 경험을 제공합니다.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for package in featured_packages %}
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
+                    {% if package.image %}
+                        <img src="{{ package.image.url }}" alt="{{ package.name_ko }}" class="w-full h-48 object-cover">
+                    {% else %}
+                        <div class="w-full h-48 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
+                            <i class="fas fa-medical-kit text-white text-6xl"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
+                                {{ package.department.name_ko }}
+                            </span>
+                            {% if package.is_featured %}
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">
+                                    <i class="fas fa-star mr-1"></i>추천
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ package.name_ko }}</h3>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ package.description|truncatewords:15 }}</p>
+                        
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="text-2xl font-bold text-blue-600">
+                                ₩{{ package.price|floatformat:0 }}
+                            </div>
+                            <div class="text-sm text-gray-500">
+                                <i class="fas fa-calendar-alt mr-1"></i>{{ package.duration_days }}일
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-2">
+                            <a href="{% url 'medical_tourism:package_detail' package.pk %}" 
+                               class="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg text-center text-sm font-medium hover:bg-gray-200 transition-colors">
+                                자세히 보기
+                            </a>
+                            <a href="{% url 'medical_tourism:appointment_create_package' 0 package.pk %}" 
+                               class="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 px-4 rounded-lg text-center text-sm font-medium hover:from-blue-600 hover:to-purple-700 transition-all">
+                                예약하기
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="{% url 'medical_tourism:package_list' %}" 
+               class="inline-flex items-center px-8 py-3 border border-blue-600 text-blue-600 rounded-lg font-medium hover:bg-blue-600 hover:text-white transition-all">
+                모든 패키지 보기 <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Popular Departments Section -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                <span class="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    주요 진료과목
+                </span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                전문적이고 체계적인 의료 서비스를 제공하는 다양한 진료과목을 만나보세요.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {% for department in popular_departments %}
+                <a href="{% url 'medical_tourism:department_detail' department.pk %}" 
+                   class="group bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 text-center hover:from-blue-50 hover:to-purple-50 transition-all duration-300 card-hover">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="{{ department.icon }} text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-2">{{ department.name_ko }}</h3>
+                    <p class="text-sm text-gray-600">{{ department.doctors.count }}명의 전문의</p>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Top Doctors Section -->
+<section class="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                <span class="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                    우수 의료진
+                </span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                풍부한 경험과 전문성을 갖춘 최고의 의료진이 여러분을 기다립니다.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for doctor in top_doctors %}
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            {% if doctor.profile_image %}
+                                <img src="{{ doctor.profile_image.url }}" alt="{{ doctor.name }}" 
+                                     class="w-16 h-16 rounded-full object-cover mr-4">
+                            {% else %}
+                                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-4">
+                                    <span class="text-white text-xl font-bold">{{ doctor.name|first }}</span>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold text-gray-900">{{ doctor.name }}</h3>
+                                <p class="text-blue-600 font-medium">{{ doctor.department.name_ko }}</p>
+                                <div class="flex items-center mt-1">
+                                    <div class="flex text-yellow-400">
+                                        {% for i in "12345" %}
+                                            {% if doctor.rating|floatformat:0|add:0 >= forloop.counter %}
+                                                <i class="fas fa-star"></i>
+                                            {% else %}
+                                                <i class="far fa-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <span class="text-gray-600 text-sm ml-2">{{ doctor.rating }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2 mb-4">
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-graduation-cap mr-2 text-blue-500"></i>
+                                {{ doctor.specialization }}
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-clock mr-2 text-green-500"></i>
+                                {{ doctor.experience_years }}년 경력
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-language mr-2 text-purple-500"></i>
+                                {{ doctor.languages }}
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-2">
+                            <a href="{% url 'medical_tourism:doctor_detail' doctor.pk %}" 
+                               class="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg text-center text-sm font-medium hover:bg-gray-200 transition-colors">
+                                프로필 보기
+                            </a>
+                            <a href="{% url 'medical_tourism:appointment_create_doctor' doctor.pk %}" 
+                               class="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 px-4 rounded-lg text-center text-sm font-medium hover:from-blue-600 hover:to-purple-700 transition-all">
+                                예약하기
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="{% url 'medical_tourism:doctor_list' %}" 
+               class="inline-flex items-center px-8 py-3 border border-blue-600 text-blue-600 rounded-lg font-medium hover:bg-blue-600 hover:text-white transition-all">
+                전체 의료진 보기 <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Reviews Section -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                <span class="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                    환자 후기
+                </span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                실제 환자분들이 남겨주신 소중한 후기를 확인해보세요.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {% for review in recent_reviews %}
+                <div class="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl p-6 card-hover">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-white text-lg font-bold">{{ review.appointment.patient.first_name|first|default:review.appointment.patient.username|first }}</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-900">{{ review.appointment.patient.first_name|default:review.appointment.patient.username }}</h4>
+                            <p class="text-sm text-gray-600">{{ review.appointment.doctor.name }} 원장님</p>
+                        </div>
+                        <div class="flex text-yellow-400">
+                            {% for i in "12345" %}
+                                {% if review.rating >= forloop.counter %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <h3 class="font-semibold text-gray-900 mb-2">{{ review.title }}</h3>
+                    <p class="text-gray-700 mb-4">{{ review.content|truncatewords:20 }}</p>
+                    
+                    <div class="flex items-center justify-between text-sm text-gray-500">
+                        <span>{{ review.appointment.doctor.department.name_ko }}</span>
+                        <span>{{ review.created_at|date:"Y.m.d" }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="{% url 'medical_tourism:review_list' %}" 
+               class="inline-flex items-center px-8 py-3 border border-blue-600 text-blue-600 rounded-lg font-medium hover:bg-blue-600 hover:text-white transition-all">
+                모든 후기 보기 <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section class="py-20 bg-gradient-to-br from-blue-600 to-purple-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-white mb-4">
+                왜 MediCare Global을 선택해야 할까요?
+            </h2>
+            <p class="text-xl text-blue-100 max-w-3xl mx-auto">
+                해외환자를 위한 특별한 의료 서비스와 차별화된 경험을 제공합니다.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="text-center text-white">
+                <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-award text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">국제 인증</h3>
+                <p class="text-blue-100">JCI 인증 병원으로 세계 최고 수준의 의료 품질을 보장합니다.</p>
+            </div>
+            
+            <div class="text-center text-white">
+                <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-globe text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">다국어 지원</h3>
+                <p class="text-blue-100">전문 의료 통역사가 원활한 소통을 도와드립니다.</p>
+            </div>
+            
+            <div class="text-center text-white">
+                <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-clock text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">24시간 케어</h3>
+                <p class="text-blue-100">입국부터 출국까지 24시간 전담 케어 매니저가 함께합니다.</p>
+            </div>
+            
+            <div class="text-center text-white">
+                <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-shield-alt text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">안전 보장</h3>
+                <p class="text-blue-100">의료사고 보험과 전문적인 사후 관리로 안전을 보장합니다.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20 bg-gray-900">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-4xl font-bold text-white mb-6">
+            지금 바로 시작하세요
+        </h2>
+        <p class="text-xl text-gray-300 mb-8">
+            전문 의료진과의 상담을 통해 맞춤형 치료 계획을 수립해보세요.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'medical_tourism:appointment_create' %}" 
+               class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-300">
+                <i class="fas fa-calendar-plus mr-2"></i> 무료 상담 예약
+            </a>
+            <a href="{% url 'medical_tourism:contact' %}" 
+               class="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-gray-900 transition-all duration-300">
+                <i class="fas fa-phone mr-2"></i> 전화 상담
+            </a>
+        </div>
+        
+        <div class="mt-8 text-gray-400">
+            <p>📞 24시간 상담 가능: +82-2-1234-5678</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    // Observe all card elements
+    document.querySelectorAll('.card-hover').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(card);
+    });
+    
+    // Auto-update date input to tomorrow
+    const dateInput = document.querySelector('input[type="date"]');
+    if (dateInput) {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        dateInput.min = tomorrow.toISOString().split('T')[0];
+        dateInput.value = tomorrow.toISOString().split('T')[0];
+    }
+</script>
+{% endblock %}

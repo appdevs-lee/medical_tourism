@@ -1,0 +1,120 @@
+<!-- templates/medical_tourism/appointment_list.html -->
+{% extends 'base.html' %}
+
+{% block title %}예약 내역 - MediCare Global{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-r from-green-600 to-blue-700 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center text-white">
+            <h1 class="text-4xl font-bold mb-4">예약 내역</h1>
+            <p class="text-xl text-green-100">
+                진료 예약 현황을 확인하고 관리하세요
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Status Filter -->
+        <div class="mb-8 bg-white rounded-lg p-6 shadow-lg">
+            <div class="flex flex-wrap gap-4">
+                <a href="?status=all" class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200">
+                    전체 ({{ appointments|length }})
+                </a>
+                <a href="?status=pending" class="px-4 py-2 rounded-lg bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
+                    예약 대기
+                </a>
+                <a href="?status=confirmed" class="px-4 py-2 rounded-lg bg-green-100 text-green-800 hover:bg-green-200">
+                    예약 확정
+                </a>
+                <a href="?status=completed" class="px-4 py-2 rounded-lg bg-blue-100 text-blue-800 hover:bg-blue-200">
+                    진료 완료
+                </a>
+                <a href="?status=cancelled" class="px-4 py-2 rounded-lg bg-red-100 text-red-800 hover:bg-red-200">
+                    예약 취소
+                </a>
+            </div>
+        </div>
+
+        <!-- Appointments List -->
+        <div class="space-y-6">
+            {% for appointment in appointments %}
+                <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-green-600 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-user-md text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">{{ appointment.doctor.name }}</h3>
+                                <p class="text-gray-600">{{ appointment.doctor.department.name_ko }}</p>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                            {% if appointment.status == 'confirmed' %}bg-green-100 text-green-800
+                            {% elif appointment.status == 'pending' %}bg-yellow-100 text-yellow-800
+                            {% elif appointment.status == 'cancelled' %}bg-red-100 text-red-800
+                            {% elif appointment.status == 'completed' %}bg-blue-100 text-blue-800
+                            {% endif %}">
+                            {{ appointment.get_status_display }}
+                        </span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar text-blue-500 mr-2"></i>
+                            <span class="text-sm text-gray-700">{{ appointment.appointment_date|date:"Y년 m월 d일" }}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-clock text-green-500 mr-2"></i>
+                            <span class="text-sm text-gray-700">{{ appointment.appointment_date|time:"H:i" }}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-won-sign text-purple-500 mr-2"></i>
+                            <span class="text-sm text-gray-700">₩{{ appointment.total_amount|floatformat:0 }}</span>
+                        </div>
+                        {% if appointment.package %}
+                        <div class="flex items-center">
+                            <i class="fas fa-gift text-pink-500 mr-2"></i>
+                            <span class="text-sm text-gray-700">{{ appointment.package.name_ko }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <a href="{% url 'medical_tourism:appointment_detail' appointment.pk %}" 
+                           class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-200">
+                            상세 보기
+                        </a>
+                        {% if appointment.status == 'confirmed' %}
+                            <a href="{% url 'medical_tourism:appointment_cancel' appointment.pk %}" 
+                               class="bg-red-100 text-red-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-200">
+                                예약 취소
+                            </a>
+                        {% elif appointment.status == 'completed' and not appointment.review %}
+                            <a href="{% url 'medical_tourism:review_create' appointment.pk %}" 
+                               class="bg-green-100 text-green-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-200">
+                                후기 작성
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="text-center py-12">
+                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-calendar-times text-gray-400 text-3xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">예약 내역이 없습니다</h3>
+                    <p class="text-gray-500 mb-4">첫 진료 예약을 진행해보세요.</p>
+                    <a href="{% url 'medical_tourism:appointment_create' %}" 
+                       class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700">
+                        예약하기
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

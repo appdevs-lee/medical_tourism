@@ -1,0 +1,115 @@
+
+<!-- templates/medical_tourism/package_list.html -->
+{% extends 'base.html' %}
+
+{% block title %}의료 패키지 - MediCare Global{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-r from-purple-600 to-pink-700 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center text-white">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">의료 패키지</h1>
+            <p class="text-xl text-purple-100 max-w-3xl mx-auto">
+                맞춤형 의료관광 패키지로 건강과 휴식을 한번에 경험하세요
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Filter Section -->
+        <div class="mb-8 bg-gray-50 rounded-lg p-6">
+            <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">패키지 종류</label>
+                    <select name="type" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        <option value="">전체</option>
+                        <option value="basic">기본 검진</option>
+                        <option value="premium">프리미엄 검진</option>
+                        <option value="cosmetic">미용 패키지</option>
+                        <option value="wellness">웰니스 패키지</option>
+                        <option value="dental">치과 패키지</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">가격 범위</label>
+                    <select name="price_range" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        <option value="">전체</option>
+                        <option value="0-1000000">100만원 이하</option>
+                        <option value="1000000-3000000">100-300만원</option>
+                        <option value="3000000-5000000">300-500만원</option>
+                        <option value="5000000-">500만원 이상</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">진료과목</label>
+                    <select name="department" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        <option value="">전체</option>
+                        <!-- departments options here -->
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button type="submit" class="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+                        필터 적용
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Packages Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for package in packages %}
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover border border-gray-100">
+                    {% if package.image %}
+                        <img src="{{ package.image.url }}" alt="{{ package.name_ko }}" class="w-full h-48 object-cover">
+                    {% else %}
+                        <div class="w-full h-48 bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
+                            <i class="fas fa-medical-kit text-white text-6xl"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-3 py-1 bg-purple-100 text-purple-800 text-sm font-medium rounded-full">
+                                {{ package.get_package_type_display }}
+                            </span>
+                            {% if package.is_featured %}
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">
+                                    <i class="fas fa-star mr-1"></i>추천
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ package.name_ko }}</h3>
+                        <p class="text-gray-600 text-sm mb-4">{{ package.description|truncatewords:15 }}</p>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="text-center bg-purple-50 rounded-lg p-3">
+                                <div class="text-2xl font-bold text-purple-600">{{ package.duration_days }}</div>
+                                <div class="text-xs text-gray-600">일</div>
+                            </div>
+                            <div class="text-center bg-pink-50 rounded-lg p-3">
+                                <div class="text-2xl font-bold text-pink-600">₩{{ package.price|floatformat:0 }}</div>
+                                <div class="text-xs text-gray-600">만원</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-2">
+                            <a href="{% url 'medical_tourism:package_detail' package.pk %}" 
+                               class="flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded-lg text-center text-sm font-medium hover:bg-gray-200">
+                                자세히 보기
+                            </a>
+                            <a href="{% url 'medical_tourism:appointment_create_package' 0 package.pk %}" 
+                               class="flex-1 bg-gradient-to-r from-purple-500 to-pink-600 text-white py-2 px-3 rounded-lg text-center text-sm font-medium hover:from-purple-600 hover:to-pink-700">
+                                예약하기
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
