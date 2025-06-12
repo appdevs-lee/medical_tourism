@@ -1,0 +1,21 @@
+<div class="flex items-center">
+    {% for i in "12345" %}
+        {% if forloop.counter <= full_stars %}
+            <i class="fas fa-star text-yellow-400 
+                {% if size == 'sm' %}text-sm
+                {% elif size == 'lg' %}text-lg
+                {% else %}text-base{% endif %}"></i>
+        {% else %}
+            <i class="far fa-star text-gray-300 
+                {% if size == 'sm' %}text-sm
+                {% elif size == 'lg' %}text-lg
+                {% else %}text-base{% endif %}"></i>
+        {% endif %}
+    {% endfor %}
+    <span class="ml-1 text-gray-600 
+        {% if size == 'sm' %}text-xs
+        {% elif size == 'lg' %}text-base
+        {% else %}text-sm{% endif %}">
+        {{ rating }}
+    </span>
+</div>
